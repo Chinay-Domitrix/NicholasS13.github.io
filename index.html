@@ -46,16 +46,24 @@ scene.add(ambientLight);
 
 //const lightHelper = new THREE.PointLightHelper(pointLight);
 //scene.add(lightHelper);
-
+var previousPos = document.body.getBoundingClientRect().top;
+var pos = document.body.getBoundingClientRect().top;
 function moveCamera(){
-    const pos = document.body.getBoundingClientRect().top;
+    previousPos = pos;
+    pos = document.body.getBoundingClientRect().top;
     torus.rotation.x+=.05;
     torus.rotation.y+=.075;
     torus.rotation.z+=.05;
-    
-    camera.position.z= pos*-.01;
-    camera.position.x= pos*-.0002;
+
+    if(pos<previousPos){
+    camera.position.z-= pos*-.01;
+    camera.position.x-= pos*-.0002;
     camera.rotation.y= pos*-.0002;
+    }else{
+        camera.position.z+= pos*-.01;
+    camera.position.x+= pos*-.0002;
+    camera.rotation.y= pos*-.0002;
+    }
 }
 document.body.onscroll = moveCamera;
 //game loop
