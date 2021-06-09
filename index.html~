@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nick's Website</title>
+    <style>
+        canvas{
+            position: fixed;
+            top:0;
+            left:0;
+        }
+        body{
+            overflow-y: scroll;
+            
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script type="module">
+import * as THREE from 'https://cdn.skypack.dev/three@0.129.0';
+let numOfSections = 8;//intro/about me, experience, education,projects*numOfProjects, skills, contact
+document.getElementsByTagName("html")[0].style.height = ((window.innerHeight*1.2)*numOfSections)+"px";
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector("#canvas"),
+	alpha: true});
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0xA8A8A8,1);
+
+var text;
+const geometry = new THREE.TorusGeometry(10, 1, 30, 100);
+const material = new THREE.MeshStandardMaterial({color: 0x783030});//l({color: 0xd4af37});
+const torus = new THREE.Mesh(geometry,material);
+
+const loader = new THREE.FontLoader();
+loader.load( 'helvetiker_regular.typeface.json', function ( font ) {
+
+const geometry2 = new THREE.TextGeometry( 'Hello three.js!', {
+    font: font,
+    size: 10,
+    height: 5,
+    curveSegments: 12,
+    bevelEnabled: true,
+    bevelThickness: 10,
+    bevelSize: 8,
+    bevelOffset: 0,
+    bevelSegments: 5
+} );
+text = new THREE.Mesh(geometry2,new THREE.MeshStandardMaterial({color: 0x0000FF}));
+scene.add(text);
+} );
+
+
+
+scene.add(torus);
+
+const pointLight = new THREE.PointLight(0xffffff)
+pointLight.position.set(5*4, 5*4, 5*4);
+
+const ambientLight = new THREE.AmbientLight(0xffffff);
+//scene.add(ambientLight);
+scene.add(pointLight);
+const lightHelper = new THREE.PointLightHelper(pointLight);
+//scene.add(lightHelper);
+
+moveCamera();
+function moveCamera(){
+    const pos = document.body.getBoundingClientRect().top;
+    
+    /*torus.rotation.x+=.05;
+    torus.rotation.y+=.075;
+    //torus.rotation.z+=.04;*/
+    
+    camera.position.z= pos*-.01;
+    camera.position.x= pos*-.0002;
+    camera.rotation.y= pos*-.0002;
+}
+document.body.onscroll = moveCamera;
+//game loop
+function animate(){
+    requestAnimationFrame(animate);
+
+   // torus.rotation.x+=.01;
+    torus.rotation.y+=.01;
+    renderer.render(scene, camera);
+
+}
+animate();
+
+    </script>
+</body>
+</html>
